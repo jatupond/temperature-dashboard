@@ -1,1 +1,194 @@
 # temperature-dashboard
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature & Weather Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts (Prompt) -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-100">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                    🌡️ Temperature Dashboard
+                </h1>
+                <p class="text-sm text-slate-500">ระบบติดตามและแสดงผลอุณหภูมิแบบเรียลไทม์</p>
+            </div>
+            <div class="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-full text-sm font-medium border border-emerald-200">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                ระบบกำลังทำงานปกติ (Live)
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+
+        <!-- KPI Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Card 1 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">อุณหภูมิปัจจุบัน</p>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">32.5 <span class="text-xl font-normal text-slate-600">°C</span></h3>
+                    <span class="text-xs text-rose-500 font-medium mt-2 inline-block">↑ สูงกว่าเมื่อวาน 1.2°C</span>
+                </div>
+                <div class="w-12 h-12 bg-orange-50 text-orange-500 rounded-xl flex items-center justify-center text-2xl font-bold">
+                    🔥
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">ความชื้นสัมพัทธ์</p>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">68 <span class="text-xl font-normal text-slate-600">%</span></h3>
+                    <span class="text-xs text-emerald-500 font-medium mt-2 inline-block">อยู่ในเกณฑ์ปกติ</span>
+                </div>
+                <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center text-2xl font-bold">
+                    💧
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">อุณหภูมิสูงสุดวันนี้</p>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">35.0 <span class="text-xl font-normal text-slate-600">°C</span></h3>
+                    <span class="text-xs text-slate-400 mt-2 inline-block">เวลา 14:00 น.</span>
+                </div>
+                <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-xl flex items-center justify-center text-2xl font-bold">
+                    ☀️
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-slate-500">อุณหภูมิต่ำสุดวันนี้</p>
+                    <h3 class="text-3xl font-bold text-slate-900 mt-1">26.2 <span class="text-xl font-normal text-slate-600">°C</span></h3>
+                    <span class="text-xs text-slate-400 mt-2 inline-block">เวลา 05:00 น.</span>
+                </div>
+                <div class="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center text-2xl font-bold">
+                    🌙
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Line Chart (24 Hours Trend) -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2 flex flex-col justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-slate-900">แนวโน้มอุณหภูมิ 24 ชั่วโมงล่าสุด</h3>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">อัปเดตทุก 1 ชม.</span>
+                </div>
+                <div class="relative h-72 w-full">
+                    <canvas id="tempLineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Bar Chart (Weekly Average) -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-slate-900">อุณหภูมิเฉลี่ยรายวัน</h3>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md">สัปดาห์นี้</span>
+                </div>
+                <div class="relative h-72 w-full">
+                    <canvas id="tempBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 mt-auto py-4 text-center text-sm text-slate-500">
+        <p>Dashboard Template hosted via GitHub Pages &copy; 2026</p>
+    </footer>
+
+    <!-- Chart Scripts -->
+    <script>
+        // Line Chart: 24 Hours Temperature
+        const ctxLine = document.getElementById('tempLineChart').getContext('2d');
+        new Chart(ctxLine, {
+            type: 'line',
+            data: {
+                labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+                datasets: [{
+                    label: 'อุณหภูมิ (°C)',
+                    data: [27, 26, 26, 29, 33, 35, 31, 28],
+                    borderColor: '#f97316',
+                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#f97316'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Bar Chart: Weekly Average Temperature
+        const ctxBar = document.getElementById('tempBarChart').getContext('2d');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'],
+                datasets: [{
+                    label: 'อุณหภูมิเฉลี่ย (°C)',
+                    data: [32, 33, 31, 34, 35, 33, 32],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: '#f1f5f9' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
